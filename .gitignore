@@ -1,0 +1,36 @@
+# Python virtual environment
+.venv/
+
+# Personal data (contains real workout records)
+data/workout.db
+android/FitnessTrackerAndroid/app/src/main/assets/workout.db
+backup/
+
+# Build output
+dist/
+build/
+*.spec
+
+# Android build artifacts
+android/FitnessTrackerAndroid/app/build/
+android/FitnessTrackerAndroid/.gradle/
+android/FitnessTrackerAndroid/build/
+android/FitnessTrackerAndroid/local.properties
+
+# Logs and temp
+tmp/
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db

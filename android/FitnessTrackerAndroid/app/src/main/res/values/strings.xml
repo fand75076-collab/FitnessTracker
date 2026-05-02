@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+    <string name="app_name">健身趋势</string>
+    <string name="entry_title">记录单组训练</string>
+    <string name="dashboard_title">趋势总览</string>
+    <string name="recent_title">最近记录</string>
+    <string name="pr_title">个人记录 (PR)</string>
+    <string name="save_button">保存这一组</string>
+    <string name="delete_button">删除</string>
+    <string name="edit_button">编辑</string>
+    <string name="cancel_button">取消</string>
+    <string name="confirm_delete">确认删除？</string>
+    <string name="no_data">暂无数据</string>
+    <string name="total_sets">总组数</string>
+    <string name="total_volume">总训练量</string>
+    <string name="active_days">训练天数</string>
+    <string name="max_1rm">最高估算 1RM</string>
+    <string name="volume_trend">训练量趋势</string>
+    <string name="body_part_dist">部位分布</string>
+</resources>
