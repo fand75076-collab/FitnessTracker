@@ -99,7 +99,9 @@ def build_max_weight_progress(dataframe: pd.DataFrame, grain: str) -> pd.DataFra
     progress["previous_best_weight_kg"] = progress.groupby("exercise_name")["best_weight_kg"].shift(1)
     progress["weight_change_kg"] = progress["best_weight_kg"] - progress["previous_best_weight_kg"]
     previous = progress["previous_best_weight_kg"]
-    progress["weight_change_pct"] = progress["weight_change_kg"].where(previous.notna() & (previous > 0)) / previous.where(previous.notna() & (previous > 0)) * 100
+    mask = previous.notna() & (previous > 0)
+    progress["weight_change_pct"] = progress["weight_change_kg"].where(mask, 0) / previous.where(mask, 1) * 100
+    progress.loc[~mask, "weight_change_pct"] = 0.0
     return progress
 
 
@@ -341,8 +343,8 @@ def build_progression_candidates(
         "exercise_name",
         "latest_session",
         "latest_weight_kg",
-        "latest_avg_reps",
-        "previous_avg_reps",
+        "latest_max_reps",
+        "previous_max_reps",
         "suggested_low_kg",
         "suggested_high_kg",
         "reason",
@@ -355,7 +357,7 @@ def build_progression_candidates(
         .agg(
             latest_session=("completed_at", "max"),
             latest_weight_kg=("weight_kg", "max"),
-            latest_avg_reps=("reps", "mean"),
+            latest_max_reps=("reps", "max"),
             sets=("id", "count"),
         )
         .sort_values(["exercise_name", "latest_session"])
@@ -368,15 +370,15 @@ def build_progression_candidates(
             continue
         latest = recent.iloc[-1]
         previous = recent.iloc[-2]
-        if latest["latest_avg_reps"] >= target_reps and previous["latest_avg_reps"] >= target_reps:
+        if latest["latest_max_reps"] >= target_reps and previous["latest_max_reps"] >= target_reps:
             weight = float(latest["latest_weight_kg"])
             rows.append(
                 {
                     "exercise_name": exercise,
                     "latest_session": latest["latest_session"],
                     "latest_weight_kg": round(weight, 1),
-                    "latest_avg_reps": round(float(latest["latest_avg_reps"]), 1),
-                    "previous_avg_reps": round(float(previous["latest_avg_reps"]), 1),
+                    "latest_max_reps": round(float(latest["latest_max_reps"]), 1),
+                    "previous_max_reps": round(float(previous["latest_max_reps"]), 1),
                     "suggested_low_kg": round(weight * 1.02, 1),
                     "suggested_high_kg": round(weight * 1.10, 1),
                     "reason": f"连续{min_sessions}次训练平均次数达到{target_reps}+，可考虑小幅加重。",
@@ -467,13 +469,18 @@ def build_pr_records(dataframe: pd.DataFrame) -> pd.DataFrame:
     prs = []
     for exercise, group in sorted_df.groupby("exercise_name"):
         group_sorted = group.sort_values("completed_at")
-        best_1rm_idx = group_sorted["estimated_1rm"].idxmax()
+        if (group_sorted["estimated_1rm"] > 0).any():
+            best_1rm_idx = group_sorted["estimated_1rm"].idxmax()
+        else:
+            best_1rm_idx = group_sorted["reps"].idxmax()
         best_row = group_sorted.loc[best_1rm_idx]
         best_position = group_sorted.index.get_loc(best_1rm_idx)
         before = group_sorted.iloc[:best_position]
 
         previous_weight = before["weight_kg"].max() if not before.empty else None
-        previous_date = before.loc[before["weight_kg"].idxmax(), "completed_at"] if not before.empty else None
+        if previous_weight == 0:
+            previous_weight = None
+        previous_date = before.loc[before["weight_kg"].idxmax(), "completed_at"] if not before.empty and before["weight_kg"].max() > 0 else None
 
         prs.append({
             "exercise_name": exercise,

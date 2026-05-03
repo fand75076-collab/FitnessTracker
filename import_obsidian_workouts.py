@@ -293,17 +293,20 @@ def build_records_for_match(
     pairwise = list(zip(remaining_numbers[0::2], remaining_numbers[1::2]))
     for weight, reps in pairwise:
         try:
+            weight_value = float(weight)
             reps_value = int(float(reps))
         except ValueError:
             continue
-        if reps_value <= 0:
+        if reps_value <= 0 or weight_value <= 0:
+            continue
+        if reps_value > 200 or weight_value > 300:
             continue
         records.append(
             WorkoutRecord(
                 completed_at=completed_at,
                 body_part=match.body_part,
                 exercise_name=match.canonical_name,
-                weight_kg=float(weight),
+                weight_kg=weight_value,
                 reps=reps_value,
                 set_number=set_number,
                 notes=f"Imported from Obsidian: {source_path.name}",
@@ -348,6 +351,7 @@ def import_records(source_dir: Path, target_home: Path) -> tuple[int, int, int]:
     os.environ["FITNESS_TRACKER_HOME"] = str(target_home)
 
     from fitness_tracker.db import get_connection, initialize_db
+    from fitness_tracker.normalization import canonicalize_exercise_name
 
     initialize_db()
     imported_notes = 0
@@ -380,6 +384,14 @@ def import_records(source_dir: Path, target_home: Path) -> tuple[int, int, int]:
                     skipped_sets += 1
                     continue
 
+                exercise_name = canonicalize_exercise_name(record.exercise_name)
+                if record.weight_kg < 0 or record.weight_kg > 300:
+                    skipped_sets += 1
+                    continue
+                if record.reps <= 0 or record.reps > 200:
+                    skipped_sets += 1
+                    continue
+
                 connection.execute(
                     """
                     INSERT INTO workout_sets (
@@ -395,7 +407,7 @@ def import_records(source_dir: Path, target_home: Path) -> tuple[int, int, int]:
                     (
                         record.completed_at,
                         record.body_part,
-                        record.exercise_name,
+                        exercise_name,
                         record.weight_kg,
                         record.reps,
                         record.set_number,
