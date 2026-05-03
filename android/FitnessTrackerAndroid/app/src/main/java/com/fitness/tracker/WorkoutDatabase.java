@@ -129,9 +129,9 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
             db.execSQL("ATTACH DATABASE ? AS bundled", new Object[]{bundled.getAbsolutePath()});
             attached = true;
             db.beginTransaction();
-            db.execSQL(
-                    "INSERT INTO workout_sets (completed_at, body_part, exercise_name, weight_kg, reps, set_number, notes, created_at) " +
-                            "SELECT b.completed_at, b.body_part, b.exercise_name, b.weight_kg, b.reps, b.set_number, " +
+
+            Cursor cursor = db.rawQuery(
+                    "SELECT b.completed_at, b.body_part, b.exercise_name, b.weight_kg, b.reps, b.set_number, " +
                             "IFNULL(b.notes, ''), IFNULL(b.created_at, CURRENT_TIMESTAMP) " +
                             "FROM bundled.workout_sets b " +
                             "WHERE NOT EXISTS (" +
@@ -142,12 +142,37 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
                             "AND w.reps = b.reps " +
                             "AND w.set_number = b.set_number " +
                             "AND IFNULL(w.notes, '') = IFNULL(b.notes, '')" +
-                            ")"
+                            ")",
+                    null
             );
+            try {
+                while (cursor.moveToNext()) {
+                    String rawExercise = cursor.getString(2);
+                    String canonical = Normalizer.exercise(rawExercise);
+                    String bodyPart = Normalizer.bodyPart(canonical, cursor.getString(1));
+                    double weight = cursor.getDouble(3);
+                    int reps = cursor.getInt(4);
+                    if (weight < 0 || weight > 500 || reps < 1 || reps > 200) {
+                        continue;
+                    }
+                    ContentValues values = new ContentValues();
+                    values.put("completed_at", cursor.getString(0));
+                    values.put("body_part", bodyPart);
+                    values.put("exercise_name", canonical);
+                    values.put("weight_kg", weight);
+                    values.put("reps", reps);
+                    values.put("set_number", cursor.getInt(5));
+                    values.put("notes", cursor.getString(6));
+                    values.put("created_at", cursor.getString(7));
+                    db.insertOrThrow("workout_sets", null, values);
+                }
+            } finally {
+                cursor.close();
+            }
+
             db.setTransactionSuccessful();
             seedPrefs().edit().putString(KEY_BUNDLED_SIGNATURE, signature).apply();
         } catch (RuntimeException ignored) {
-            // Keep the user's existing database usable even if the bundled seed cannot be merged.
         } finally {
             if (db.inTransaction()) {
                 db.endTransaction();
@@ -156,7 +181,6 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
                 try {
                     db.execSQL("DETACH DATABASE bundled");
                 } catch (RuntimeException ignored) {
-                    // Ignore detach failures during best-effort seed sync cleanup.
                 }
             }
             //noinspection ResultOfMethodCallIgnored
@@ -423,9 +447,10 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
         LinkedHashMap<String, WorkoutSet> bestByExercise = new LinkedHashMap<>();
         for (WorkoutSet set : allSets()) {
             WorkoutSet old = bestByExercise.get(set.exerciseName);
-            if (old == null
-                    || set.estimatedOneRepMax() > old.estimatedOneRepMax()
-                    || (set.estimatedOneRepMax() == old.estimatedOneRepMax()
+            double newScore = prScore(set);
+            double oldScore = old == null ? -1 : prScore(old);
+            if (old == null || newScore > oldScore
+                    || (Math.abs(newScore - oldScore) < 0.001
                     && set.completedAt.compareTo(old.completedAt) > 0)) {
                 bestByExercise.put(set.exerciseName, set);
             }
@@ -434,6 +459,14 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
         List<WorkoutSet> prs = new ArrayList<>(bestByExercise.values());
         prs.sort(Comparator.comparingDouble(WorkoutSet::estimatedOneRepMax).reversed());
         return prs;
+    }
+
+    private double prScore(WorkoutSet set) {
+        double rm = set.estimatedOneRepMax();
+        if (rm <= 0) {
+            return set.reps;
+        }
+        return rm;
     }
 
     private void validateWorkout(String exercise, double weight, int reps, int setNumber) {
@@ -448,6 +481,16 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
         }
         if (setNumber < 1 || setNumber > 50) {
             throw new IllegalArgumentException("组序号不合理");
+        }
+    }
+
+    static boolean isValidTimestamp(String value) {
+        if (value == null || value.trim().isEmpty()) return false;
+        try {
+            DATE_TIME.parse(value.replace("T", " "));
+            return true;
+        } catch (ParseException e) {
+            return false;
         }
     }
 

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -44,7 +45,7 @@ public final class MainActivity extends AppCompatActivity {
     private View prView;
     private View recentView;
 
-    private Spinner exerciseSpinner;
+    private AutoCompleteTextView exerciseInput;
     private Spinner bodyPartSpinner;
     private EditText timestampInput;
     private EditText weightInput;
@@ -132,10 +133,23 @@ public final class MainActivity extends AppCompatActivity {
 
         List<String> exercises = database.recentExercises(80);
         if (exercises.isEmpty()) exercises.add("杠铃卧推");
-        exerciseSpinner = new Spinner(this);
-        exerciseSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, exercises));
+        exerciseInput = new AutoCompleteTextView(this);
+        ArrayAdapter<String> exerciseAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, exercises);
+        exerciseInput.setAdapter(exerciseAdapter);
+        exerciseInput.setHint("输入或选择动作");
+        exerciseInput.setSingleLine(true);
+        exerciseInput.setTextSize(15);
+        exerciseInput.setTypeface(Typeface.DEFAULT_BOLD);
+        exerciseInput.setPadding(dp(14), 0, dp(14), 0);
+        exerciseInput.setMinimumHeight(dp(50));
+        exerciseInput.setThreshold(1);
+        GradientDrawable exBg = new GradientDrawable();
+        exBg.setColor(Color.argb(235, 255, 255, 255));
+        exBg.setCornerRadius(dp(16));
+        exBg.setStroke(dp(1), Color.argb(28, 17, 24, 39));
+        exerciseInput.setBackground(exBg);
         card.addView(label("动作名称"));
-        card.addView(exerciseSpinner, fieldLayoutParams());
+        card.addView(exerciseInput, fieldLayoutParams());
 
         bodyPartSpinner = new Spinner(this);
         bodyPartSpinner.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, BODY_PARTS));
@@ -168,10 +182,7 @@ public final class MainActivity extends AppCompatActivity {
         saveLp.height = dp(52);
         card.addView(saveButton, saveLp);
 
-        exerciseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) { applyLastValues(); }
-            @Override public void onNothingSelected(AdapterView<?> parent) {}
-        });
+        exerciseInput.setOnItemClickListener((parent, view, pos, id) -> applyLastValues());
         saveButton.setOnClickListener(v -> saveWorkout());
 
         return scrollView;
@@ -237,6 +248,10 @@ public final class MainActivity extends AppCompatActivity {
             String exercise = currentExercise();
             if (exercise.isEmpty()) { Toast.makeText(this, "动作不能为空", Toast.LENGTH_SHORT).show(); return; }
             String timestamp = timestampInput.getText().toString().trim();
+            if (!WorkoutDatabase.isValidTimestamp(timestamp)) {
+                Toast.makeText(this, "日期格式错误，请使用 yyyy-MM-dd HH:mm", Toast.LENGTH_SHORT).show();
+                return;
+            }
             double weight = Double.parseDouble(weightInput.getText().toString().trim());
             int reps = Integer.parseInt(repsInput.getText().toString().trim());
             int setNumber = Integer.parseInt(setInput.getText().toString().trim());
@@ -413,8 +428,7 @@ public final class MainActivity extends AppCompatActivity {
     }
 
     private String currentExercise() {
-        Object selected = exerciseSpinner.getSelectedItem();
-        return selected == null ? "" : String.valueOf(selected).trim();
+        return exerciseInput.getText().toString().trim();
     }
 
     private LinearLayout cardLayout() {
