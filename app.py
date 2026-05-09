@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, time, timedelta
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -578,12 +579,12 @@ def render_pr_view(dataframe: pd.DataFrame) -> None:
     })
 
     pr_display["日期"] = pr_display["日期"].dt.strftime("%Y-%m-%d")
-    if "previous_date" in pr_display.columns and pr_display["previous_date"] is not None:
+    if "previous_date" in pr_display.columns:
         pr_display["前一次日期"] = pr_display["previous_date"].apply(
             lambda d: d.strftime("%Y-%m-%d") if pd.notna(d) else ""
         )
 
-    show_cols = ["动作", "最大重量(kg)", "次数", "估算1RM(kg)", "日期", "前一次最大(kg)"]
+    show_cols = ["动作", "最大重量(kg)", "次数", "估算1RM(kg)", "日期", "前一次最大(kg)", "前一次日期"]
     available_cols = [c for c in show_cols if c in pr_display.columns]
     render_display_table(pr_display[available_cols])
 
@@ -671,7 +672,7 @@ def render_import_audit() -> None:
     right.bar_chart(by_body_part.set_index("body_part")["sets"], use_container_width=True)
 
     source_display = summary.copy()
-    source_display["文件名"] = source_display["source_path"].map(lambda value: str(value).replace("/", "\\").split("\\")[-1])
+    source_display["文件名"] = source_display["source_path"].map(lambda value: Path(str(value)).name)
     source_display = source_display.rename(
         columns={
             "source_path": "来源路径",

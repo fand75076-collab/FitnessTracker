@@ -99,9 +99,10 @@ def build_max_weight_progress(dataframe: pd.DataFrame, grain: str) -> pd.DataFra
     progress["previous_best_weight_kg"] = progress.groupby("exercise_name")["best_weight_kg"].shift(1)
     progress["weight_change_kg"] = progress["best_weight_kg"] - progress["previous_best_weight_kg"]
     previous = progress["previous_best_weight_kg"]
-    mask = previous.notna() & (previous > 0)
-    progress["weight_change_pct"] = progress["weight_change_kg"].where(mask, 0) / previous.where(mask, 1) * 100
-    progress.loc[~mask, "weight_change_pct"] = 0.0
+    # Keep NaN for periods without a valid prior baseline so downstream filters
+    # (e.g. weight_change_pct.notna()) can exclude first-appearance rows.
+    valid_previous = previous.where(previous.notna() & (previous > 0))
+    progress["weight_change_pct"] = progress["weight_change_kg"] / valid_previous * 100
     return progress
 
 

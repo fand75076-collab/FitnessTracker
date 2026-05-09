@@ -149,6 +149,21 @@ class TestBuildMaxWeightProgress:
         assert latest["weight_change_kg"] == 10.0
         assert latest["weight_change_pct"] == 10.0
 
+    def test_first_appearance_row_has_nan_pct(self):
+        """Periods with no prior baseline must surface as NaN, not 0.0,
+        so downstream `.notna()` filters exclude them from charts/tables."""
+        df = make_df(
+            [
+                {"completed_at": "2026-04-14 18:00", "weight_kg": 100, "reps": 5, "exercise_name": "杠铃卧推"},
+                {"completed_at": "2026-04-21 18:00", "weight_kg": 110, "reps": 3, "exercise_name": "杠铃卧推"},
+                {"completed_at": "2026-04-21 18:00", "weight_kg": 80, "reps": 8, "exercise_name": "杠铃划船"},
+            ]
+        )
+        result = analytics.build_max_weight_progress(df, "week")
+        first_rows = result[result["previous_best_weight_kg"].isna()]
+        assert not first_rows.empty
+        assert first_rows["weight_change_pct"].isna().all()
+
 
 class TestSummarizeLatestMaxWeightProgress:
     def test_empty_progress(self):
