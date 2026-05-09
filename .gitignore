@@ -9,7 +9,8 @@ backup/
 # Build output
 dist/
 build/
-*.spec
+# Local PyInstaller specs (FitnessTracker.spec is tracked intentionally)
+*_local.spec
 
 # Android build artifacts
 android/FitnessTrackerAndroid/app/build/

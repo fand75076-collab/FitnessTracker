@@ -136,6 +136,8 @@ def main() -> None:
     st_config.set_option("global.developmentMode", False)
     st_config.set_option("server.fileWatcherType", "none")
     st_config.set_option("server.runOnSave", False)
+    # CORS/XSRF disabled intentionally: single-user localhost app embedded in
+    # a native WebView2 window. No browser cross-origin exposure.
     st_config.set_option("server.enableCORS", True)
     st_config.set_option("server.enableXsrfProtection", False)
 
