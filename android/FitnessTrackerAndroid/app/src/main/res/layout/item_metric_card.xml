@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_card"
+    android:padding="@dimen/card_padding">
+
+    <TextView
+        android:id="@+id/metric_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Text.MetricLabel" />
+
+    <TextView
+        android:id="@+id/metric_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        style="@style/Text.MetricValue" />
+
+    <TextView
+        android:id="@+id/metric_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_xs"
+        style="@style/Text.MetricDetail" />
+
+</LinearLayout>

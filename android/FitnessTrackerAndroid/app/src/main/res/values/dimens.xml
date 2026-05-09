@@ -1,12 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
-    <dimen name="card_radius">26dp</dimen>
+<resources>
+    <!-- Spacing -->
+    <dimen name="space_xs">4dp</dimen>
+    <dimen name="space_sm">8dp</dimen>
+    <dimen name="space_md">12dp</dimen>
+    <dimen name="space_lg">16dp</dimen>
+    <dimen name="space_xl">20dp</dimen>
+    <dimen name="space_2xl">24dp</dimen>
+    <dimen name="space_3xl">32dp</dimen>
+
+    <!-- Page -->
+    <dimen name="page_horizontal">20dp</dimen>
+    <dimen name="page_top">16dp</dimen>
+    <dimen name="page_bottom">32dp</dimen>
+
+    <!-- Card -->
+    <dimen name="card_radius">20dp</dimen>
     <dimen name="card_padding">18dp</dimen>
-    <dimen name="field_radius">16dp</dimen>
+    <dimen name="card_elevation">0dp</dimen>
+    <dimen name="card_stroke_width">1dp</dimen>
+
+    <!-- Input -->
+    <dimen name="input_radius">14dp</dimen>
+    <dimen name="input_height">52dp</dimen>
+    <dimen name="input_padding_h">16dp</dimen>
+
+    <!-- Button -->
     <dimen name="button_radius">999dp</dimen>
-    <dimen name="field_height">50dp</dimen>
     <dimen name="button_height">52dp</dimen>
-    <dimen name="section_margin_top">18dp</dimen>
-    <dimen name="metric_margin">10dp</dimen>
-    <dimen name="hero_radius">28dp</dimen>
+
+    <!-- Typography -->
+    <dimen name="text_hero">28sp</dimen>
+    <dimen name="text_title">20sp</dimen>
+    <dimen name="text_body">15sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_metric_value">26sp</dimen>
+
+    <!-- Chart -->
+    <dimen name="chart_height">220dp</dimen>
+
+    <!-- Tab -->
+    <dimen name="tab_height">48dp</dimen>
 </resources>

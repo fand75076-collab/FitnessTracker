@@ -1,16 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="UnusedResources">
+<resources>
+    <!-- Primary palette — Apple HIG inspired -->
     <color name="ink">#111827</color>
+    <color name="ink_secondary">#374151</color>
     <color name="muted">#667085</color>
+    <color name="muted_light">#9CA3AF</color>
+    <color name="divider">#E5E7EB</color>
+
+    <!-- Accent -->
     <color name="apple_blue">#007AFF</color>
     <color name="apple_green">#30D158</color>
     <color name="apple_orange">#FF9F0A</color>
     <color name="apple_red">#FF453A</color>
+    <color name="apple_purple">#BF5AF2</color>
+    <color name="apple_cyan">#64D2FF</color>
+
+    <!-- Surfaces -->
     <color name="surface">#F5F7FB</color>
-    <color name="card_bg">#DDE3ED</color>
-    <color name="card_surface">#DEE3ED</color>
-    <color name="stroke">#1A111827</color>
-    <color name="white">#FFFFFF</color>
-    <color name="hero_bg_start">#0B1220</color>
-    <color name="hero_bg_end">#263449</color>
+    <color name="card">#FFFFFF</color>
+    <color name="card_stroke">#0D111827</color>
+
+    <!-- Button -->
+    <color name="button_primary">#111827</color>
+    <color name="button_primary_text">#FFFFFF</color>
+
+    <!-- Status bar -->
+    <color name="status_bar">#F5F7FB</color>
+
+    <!-- Chart -->
+    <color name="chart_fill">#26007AFF</color>
+    <color name="chart_line">#007AFF</color>
 </resources>

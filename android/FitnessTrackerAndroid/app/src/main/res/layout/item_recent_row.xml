@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_card"
+    android:padding="@dimen/space_md"
+    android:layout_marginBottom="@dimen/space_sm"
+    android:gravity="center_vertical">
+
+    <!-- Info -->
+    <TextView
+        android:id="@+id/recent_info"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="13sp"
+        android:textColor="@color/ink" />
+
+    <!-- Edit button -->
+    <TextView
+        android:id="@+id/btn_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="编辑"
+        android:textSize="12sp"
+        android:textColor="@color/apple_blue"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="@dimen/space_sm"
+        android:paddingEnd="@dimen/space_sm" />
+
+    <!-- Delete button -->
+    <TextView
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="删除"
+        android:textSize="12sp"
+        android:textColor="@color/apple_red"
+        android:fontFamily="sans-serif-medium"
+        android:paddingStart="@dimen/space_sm"
+        android:paddingEnd="@dimen/space_sm" />
+
+</LinearLayout>

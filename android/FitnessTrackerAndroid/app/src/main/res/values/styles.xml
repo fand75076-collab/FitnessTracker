@@ -1,12 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="AppTheme" parent="Theme.Material3.Light.NoActionBar">
-        <item name="android:fontFamily">sans</item>
+        <item name="android:fontFamily">sans-serif</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@color/surface</item>
         <item name="android:navigationBarColor">@color/surface</item>
-        <item name="colorAccent">@color/apple_blue</item>
-        <item name="colorPrimary">@color/ink</item>
-        <item name="colorSurface">@color/white</item>
         <item name="android:windowBackground">@color/surface</item>
+        <item name="colorPrimary">@color/ink</item>
+        <item name="colorOnPrimary">@color/button_primary_text</item>
+        <item name="colorSurface">@color/card</item>
+        <item name="colorAccent">@color/apple_blue</item>
+    </style>
+
+    <!-- Card -->
+    <style name="Widget.App.Card" parent="">
+        <item name="android:background">@drawable/bg_card</item>
+        <item name="android:padding">@dimen/card_padding</item>
+    </style>
+
+    <!-- Base parent styles (required for dot-notation hierarchy) -->
+    <style name="Text" parent="" />
+    <style name="Widget" parent="" />
+    <style name="Widget.App" parent="" />
+    <style name="Widget.App.Button" parent="" />
+
+    <!-- Section title -->
+    <style name="Text.SectionTitle">
+        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingTop">@dimen/space_xl</item>
+        <item name="android:paddingBottom">@dimen/space_md</item>
+    </style>
+
+    <!-- Metric card value -->
+    <style name="Text.MetricValue">
+        <item name="android:textSize">@dimen/text_metric_value</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
+    <!-- Metric card label -->
+    <style name="Text.MetricLabel">
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textColor">@color/muted</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Metric card detail -->
+    <style name="Text.MetricDetail">
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textColor">@color/muted_light</item>
+    </style>
+
+    <!-- Body text -->
+    <style name="Text.Body">
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/ink</item>
+    </style>
+
+    <!-- Caption -->
+    <style name="Text.Caption">
+        <item name="android:textSize">@dimen/text_caption</item>
+        <item name="android:textColor">@color/muted</item>
+    </style>
+
+    <!-- Input field -->
+    <style name="Widget.App.Input">
+        <item name="android:background">@drawable/bg_input</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:textColor">@color/ink</item>
+        <item name="android:textColorHint">@color/muted_light</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:paddingStart">@dimen/input_padding_h</item>
+        <item name="android:paddingEnd">@dimen/input_padding_h</item>
+        <item name="android:minHeight">@dimen/input_height</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <!-- Primary button -->
+    <style name="Widget.App.Button.Primary">
+        <item name="android:background">@drawable/bg_button_primary</item>
+        <item name="android:textColor">@color/button_primary_text</item>
+        <item name="android:textSize">@dimen/text_body</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textAllCaps">false</item>
     </style>
 </resources>

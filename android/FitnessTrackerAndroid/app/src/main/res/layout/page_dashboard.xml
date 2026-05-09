@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/page_horizontal"
+        android:paddingEnd="@dimen/page_horizontal"
+        android:paddingTop="@dimen/page_top"
+        android:paddingBottom="@dimen/page_bottom">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="趋势总览"
+            style="@style/Text.SectionTitle" />
+
+        <!-- Metrics grid: 2x2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <include
+                android:id="@+id/metric_sets"
+                layout="@layout/item_metric_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm" />
+
+            <include
+                android:id="@+id/metric_volume"
+                layout="@layout/item_metric_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/space_sm">
+
+            <include
+                android:id="@+id/metric_days"
+                layout="@layout/item_metric_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="@dimen/space_sm" />
+
+            <include
+                android:id="@+id/metric_1rm"
+                layout="@layout/item_metric_card"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <!-- Trend chart -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="训练量趋势"
+            style="@style/Text.SectionTitle" />
+
+        <com.fitness.tracker.TrendChartView
+            android:id="@+id/chart_trend"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chart_height"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/space_md" />
+
+        <!-- Body part chart -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="部位分布"
+            style="@style/Text.SectionTitle" />
+
+        <com.fitness.tracker.BarChartView
+            android:id="@+id/chart_body"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/chart_height"
+            android:background="@drawable/bg_card"
+            android:padding="@dimen/space_md" />
+
+    </LinearLayout>
+</ScrollView>
