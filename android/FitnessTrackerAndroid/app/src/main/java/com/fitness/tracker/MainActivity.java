@@ -291,7 +291,7 @@ public final class MainActivity extends AppCompatActivity {
         bodyChart.setData(database.volumeByBodyPart(sets));
 
         prList.removeAllViews();
-        List<WorkoutSet> prs = database.prRecords();
+        List<WorkoutSet> prs = database.prRecords(sets);
         Set<String> seen = new HashSet<>();
         for (WorkoutSet pr : prs) {
             if (seen.contains(pr.exerciseName)) continue;

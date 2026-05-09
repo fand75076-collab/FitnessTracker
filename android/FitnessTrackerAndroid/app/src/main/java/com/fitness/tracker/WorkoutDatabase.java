@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -172,7 +174,8 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
 
             db.setTransactionSuccessful();
             seedPrefs().edit().putString(KEY_BUNDLED_SIGNATURE, signature).apply();
-        } catch (RuntimeException ignored) {
+        } catch (RuntimeException e) {
+            Log.w("WorkoutDatabase", "syncBundledDatabase failed", e);
         } finally {
             if (db.inTransaction()) {
                 db.endTransaction();
@@ -444,8 +447,13 @@ final class WorkoutDatabase extends SQLiteOpenHelper {
     }
 
     List<WorkoutSet> prRecords() {
+        return prRecords(null);
+    }
+
+    List<WorkoutSet> prRecords(List<WorkoutSet> preloaded) {
+        List<WorkoutSet> source = preloaded != null ? preloaded : allSets();
         LinkedHashMap<String, WorkoutSet> bestByExercise = new LinkedHashMap<>();
-        for (WorkoutSet set : allSets()) {
+        for (WorkoutSet set : source) {
             WorkoutSet old = bestByExercise.get(set.exerciseName);
             double newScore = prScore(set);
             double oldScore = old == null ? -1 : prScore(old);
