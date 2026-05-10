@@ -4,6 +4,7 @@
 # Personal data (contains real workout records)
 data/workout.db
 android/FitnessTrackerAndroid/app/src/main/assets/workout.db
+oppo_cloud_notes_*.json
 backup/
 
 # Build output
